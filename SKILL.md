@@ -1,10 +1,8 @@
----
 
-# name: frontend-design
 
-# description: Design modern, professional, and user-friendly web interfaces with a strong focus on usability, visual consistency, responsiveness, and real-world product quality. Suitable for dashboards, management systems, SaaS applications, admin panels, and business software.
-license: Complete terms in LICENSE.txt
---------------------------------------
+# Name: Frontend-design
+
+Description: Design modern, professional, and user-friendly web interfaces with a strong focus on usability, visual consistency, responsiveness, and real-world product quality. Suitable for dashboards, management systems, SaaS applications, admin panels, and business software.
 
 # Frontend Design Guidelines
 
