@@ -1,42 +1,155 @@
 ---
+
 name: frontend-design
-description: Create distinctive, production-grade frontend interfaces with high design quality. Use this skill when the user asks to build web components, pages, artifacts, posters, or applications (examples include websites, landing pages, dashboards, React components, HTML/CSS layouts, or when styling/beautifying any web UI). Generates creative, polished code and UI design that avoids generic AI aesthetics.
+description: Design modern, professional, and user-friendly web interfaces with a strong focus on usability, visual consistency, responsiveness, and real-world product quality. Suitable for dashboards, management systems, SaaS applications, admin panels, and business software.
 license: Complete terms in LICENSE.txt
----
+--------------------------------------
 
-This skill guides creation of distinctive, production-grade frontend interfaces that avoid generic "AI slop" aesthetics. Implement real working code with exceptional attention to aesthetic details and creative choices.
+# Frontend Design Guidelines
 
-The user provides frontend requirements: a component, page, application, or interface to build. They may include context about the purpose, audience, or technical constraints.
+The purpose of this skill is to create frontend interfaces that feel like real products used in production environments.
 
-## Design Thinking
+The design should balance aesthetics and usability while maintaining a professional appearance.
 
-Before coding, understand the context and commit to a BOLD aesthetic direction:
-- **Purpose**: What problem does this interface solve? Who uses it?
-- **Tone**: Pick an extreme: brutally minimal, maximalist chaos, retro-futuristic, organic/natural, luxury/refined, playful/toy-like, editorial/magazine, brutalist/raw, art deco/geometric, soft/pastel, industrial/utilitarian, etc. There are so many flavors to choose from. Use these for inspiration but design one that is true to the aesthetic direction.
-- **Constraints**: Technical requirements (framework, performance, accessibility).
-- **Differentiation**: What makes this UNFORGETTABLE? What's the one thing someone will remember?
+## Understanding the Product
 
-**CRITICAL**: Choose a clear conceptual direction and execute it with precision. Bold maximalism and refined minimalism both work - the key is intentionality, not intensity.
+Before starting implementation, understand:
 
-Then implement working code (HTML/CSS/JS, React, Vue, etc.) that is:
-- Production-grade and functional
-- Visually striking and memorable
-- Cohesive with a clear aesthetic point-of-view
-- Meticulously refined in every detail
+* Who will use the application?
+* What problem does it solve?
+* What information is most important for users?
+* How can users complete tasks quickly and efficiently?
 
-## Frontend Aesthetics Guidelines
+Design decisions should support the user's workflow rather than focusing only on visual effects.
 
-Focus on:
-- **Typography**: Choose fonts that are beautiful, unique, and interesting. Avoid generic fonts like Arial and Inter; opt instead for distinctive choices that elevate the frontend's aesthetics; unexpected, characterful font choices. Pair a distinctive display font with a refined body font.
-- **Color & Theme**: Commit to a cohesive aesthetic. Use CSS variables for consistency. Dominant colors with sharp accents outperform timid, evenly-distributed palettes.
-- **Motion**: Use animations for effects and micro-interactions. Prioritize CSS-only solutions for HTML. Use Motion library for React when available. Focus on high-impact moments: one well-orchestrated page load with staggered reveals (animation-delay) creates more delight than scattered micro-interactions. Use scroll-triggering and hover states that surprise.
-- **Spatial Composition**: Unexpected layouts. Asymmetry. Overlap. Diagonal flow. Grid-breaking elements. Generous negative space OR controlled density.
-- **Backgrounds & Visual Details**: Create atmosphere and depth rather than defaulting to solid colors. Add contextual effects and textures that match the overall aesthetic. Apply creative forms like gradient meshes, noise textures, geometric patterns, layered transparencies, dramatic shadows, decorative borders, custom cursors, and grain overlays.
+## Design Approach
 
-NEVER use generic AI-generated aesthetics like overused font families (Inter, Roboto, Arial, system fonts), cliched color schemes (particularly purple gradients on white backgrounds), predictable layouts and component patterns, and cookie-cutter design that lacks context-specific character.
+Build interfaces that are:
 
-Interpret creatively and make unexpected choices that feel genuinely designed for the context. No design should be the same. Vary between light and dark themes, different fonts, different aesthetics. NEVER converge on common choices (Space Grotesk, for example) across generations.
+* Clean
+* Professional
+* Responsive
+* Easy to navigate
+* Visually consistent
+* Pleasant to use
 
-**IMPORTANT**: Match implementation complexity to the aesthetic vision. Maximalist designs need elaborate code with extensive animations and effects. Minimalist or refined designs need restraint, precision, and careful attention to spacing, typography, and subtle details. Elegance comes from executing the vision well.
+The interface should feel trustworthy and polished.
 
-Remember: Claude is capable of extraordinary creative work. Don't hold back, show what can truly be created when thinking outside the box and committing fully to a distinctive vision.
+## Visual Style
+
+Choose a design style that matches the application's purpose.
+
+For business applications, dashboards, and management systems:
+
+* Modern SaaS-inspired layouts
+* Clean spacing
+* Consistent color palette
+* Clear hierarchy
+* Professional components
+
+Avoid unnecessary complexity and visual clutter.
+
+## Typography
+
+Typography should improve readability.
+
+Guidelines:
+
+* Use a clear visual hierarchy
+* Maintain consistent spacing
+* Ensure text remains readable on all devices
+* Choose fonts appropriate for professional software
+
+Typography should support the content, not distract from it.
+
+## Color System
+
+Use a consistent color system across the application.
+
+Colors should communicate:
+
+* Primary actions
+* Success states
+* Warning states
+* Error states
+* Information states
+
+Avoid random or inconsistent color usage.
+
+## Layout and Structure
+
+Create layouts that help users understand information quickly.
+
+Prefer:
+
+* Dashboard cards
+* Data tables
+* Search and filtering tools
+* Navigation sidebars
+* Responsive grids
+
+Important content should be easy to locate.
+
+## User Experience
+
+Focus on usability throughout the application.
+
+Provide:
+
+* Clear navigation
+* Helpful feedback
+* Error handling
+* Success messages
+* Loading states
+
+Users should always understand what is happening.
+
+## Interactions
+
+Use subtle interactions to improve the experience.
+
+Examples:
+
+* Hover effects
+* Smooth transitions
+* Button feedback
+* Form validation indicators
+
+Animations should enhance usability, not distract from it.
+
+## Responsive Design
+
+Support:
+
+* Desktop
+* Laptop
+* Tablet
+* Mobile devices
+
+The experience should remain consistent across screen sizes.
+
+## Accessibility
+
+Consider accessibility from the beginning.
+
+Ensure:
+
+* Good contrast ratios
+* Clear focus states
+* Readable font sizes
+* Accessible form controls
+
+## Quality Standards
+
+The final interface should feel like a production-ready application rather than a tutorial project.
+
+A reviewer should notice:
+
+* Professional appearance
+* Clean organization
+* Consistent design
+* Good usability
+* Attention to detail
+* Responsive behavior
+
+
