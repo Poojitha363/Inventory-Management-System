@@ -1,0 +1,183 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block breadcrumb %}<i class="bi bi-grid-1x2-fill me-2"></i>Dashboard{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div>
+    <h1 class="page-title">Dashboard</h1>
+    <p class="page-subtitle">Inventory overview at a glance</p>
+  </div>
+  <a href="/products/add" class="btn-primary-custom">
+    <i class="bi bi-plus-lg"></i> Add Product
+  </a>
+</div>
+
+<!-- ── KPI Cards ──────────────────────────────────────────────── -->
+<div class="kpi-grid">
+  <div class="kpi-card kpi-blue animate-in" style="--delay:.05s">
+    <div class="kpi-icon"><i class="bi bi-box-seam-fill"></i></div>
+    <div class="kpi-body">
+      <div class="kpi-value">{{ stats.total_products }}</div>
+      <div class="kpi-label">Total Products</div>
+    </div>
+    <div class="kpi-trend"><i class="bi bi-arrow-up-right"></i> Active</div>
+  </div>
+
+  <div class="kpi-card kpi-green animate-in" style="--delay:.10s">
+    <div class="kpi-icon"><i class="bi bi-tags-fill"></i></div>
+    <div class="kpi-body">
+      <div class="kpi-value">{{ stats.total_categories }}</div>
+      <div class="kpi-label">Categories</div>
+    </div>
+    <div class="kpi-trend"><i class="bi bi-grid"></i> Organized</div>
+  </div>
+
+  <div class="kpi-card kpi-orange animate-in" style="--delay:.15s">
+    <div class="kpi-icon"><i class="bi bi-exclamation-triangle-fill"></i></div>
+    <div class="kpi-body">
+      <div class="kpi-value">{{ stats.low_stock_count }}</div>
+      <div class="kpi-label">Low Stock Alerts</div>
+    </div>
+    <div class="kpi-trend">
+      {% if stats.low_stock_count > 0 %}
+        <a href="/products?low_stock=true" class="kpi-action">View all →</a>
+      {% else %}
+        <i class="bi bi-check-circle"></i> All good
+      {% endif %}
+    </div>
+  </div>
+
+  <div class="kpi-card kpi-purple animate-in" style="--delay:.20s">
+    <div class="kpi-icon"><i class="bi bi-currency-dollar"></i></div>
+    <div class="kpi-body">
+      <div class="kpi-value">${{ "%.0f"|format(stats.total_inventory_value) }}</div>
+      <div class="kpi-label">Inventory Value</div>
+    </div>
+    <div class="kpi-trend"><i class="bi bi-graph-up"></i> Total</div>
+  </div>
+</div>
+
+<!-- ── Secondary row ──────────────────────────────────────────── -->
+<div class="row g-4 mt-1">
+  <!-- Recent Products table -->
+  <div class="col-xl-8">
+    <div class="content-card animate-in" style="--delay:.25s">
+      <div class="content-card-header">
+        <h5><i class="bi bi-clock-history me-2 text-primary"></i>Recently Added</h5>
+        <a href="/products" class="view-all-link">View all <i class="bi bi-arrow-right"></i></a>
+      </div>
+      <div class="table-responsive">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Product</th>
+              <th>SKU</th>
+              <th>Category</th>
+              <th>Stock</th>
+              <th>Value</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for product in stats.recent_products %}
+            <tr onclick="window.location='/products/{{ product.id }}'" style="cursor:pointer">
+              <td>
+                <div class="product-cell">
+                  {% if product.image_url %}
+                    <img src="{{ product.image_url }}" alt="{{ product.name }}" class="product-thumb" />
+                  {% else %}
+                    <div class="product-thumb-placeholder"><i class="bi bi-box"></i></div>
+                  {% endif %}
+                  <div>
+                    <div class="product-name">{{ product.name }}</div>
+                    <div class="product-price">${{ "%.2f"|format(product.price) }}</div>
+                  </div>
+                </div>
+              </td>
+              <td><code class="sku-code">{{ product.sku }}</code></td>
+              <td>
+                {% if product.category %}
+                  <span class="cat-badge" style="background:{{ product.category.color }}22;color:{{ product.category.color }}">
+                    {{ product.category.name }}
+                  </span>
+                {% else %}
+                  <span class="text-muted">—</span>
+                {% endif %}
+              </td>
+              <td>
+                {% if product.quantity == 0 %}
+                  <span class="stock-badge stock-out">Out of Stock</span>
+                {% elif product.is_low_stock %}
+                  <span class="stock-badge stock-low">{{ product.quantity }} left</span>
+                {% else %}
+                  <span class="stock-badge stock-ok">{{ product.quantity }}</span>
+                {% endif %}
+              </td>
+              <td class="text-end fw-600">${{ "%.2f"|format(product.total_value) }}</td>
+            </tr>
+            {% else %}
+            <tr><td colspan="5" class="text-center text-muted py-4">No products yet. <a href="/products/add">Add your first →</a></td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Summary panel -->
+  <div class="col-xl-4">
+    <div class="content-card animate-in" style="--delay:.30s">
+      <div class="content-card-header">
+        <h5><i class="bi bi-pie-chart-fill me-2 text-success"></i>Stock Summary</h5>
+      </div>
+      <div class="summary-list">
+        <div class="summary-item">
+          <div class="summary-dot dot-green"></div>
+          <div class="summary-label">In Stock</div>
+          <div class="summary-value">{{ stats.total_products - stats.low_stock_count - stats.out_of_stock_count }}</div>
+        </div>
+        <div class="summary-item">
+          <div class="summary-dot dot-orange"></div>
+          <div class="summary-label">Low Stock</div>
+          <div class="summary-value">{{ stats.low_stock_count }}</div>
+        </div>
+        <div class="summary-item">
+          <div class="summary-dot dot-red"></div>
+          <div class="summary-label">Out of Stock</div>
+          <div class="summary-value">{{ stats.out_of_stock_count }}</div>
+        </div>
+        <div class="summary-item">
+          <div class="summary-dot dot-blue"></div>
+          <div class="summary-label">Categories</div>
+          <div class="summary-value">{{ stats.total_categories }}</div>
+        </div>
+      </div>
+
+      <div class="health-bar-wrap mt-4">
+        <div class="health-bar-label">
+          <span>Stock Health</span>
+          <span>
+            {% if stats.total_products > 0 %}
+              {{ "%.0f"|format(((stats.total_products - stats.out_of_stock_count) / stats.total_products) * 100) }}%
+            {% else %}0%{% endif %}
+          </span>
+        </div>
+        <div class="health-bar">
+          <div class="health-bar-fill"
+               style="width:{% if stats.total_products > 0 %}{{ ((stats.total_products - stats.out_of_stock_count) / stats.total_products * 100) | round }}{% else %}0{% endif %}%">
+          </div>
+        </div>
+      </div>
+
+      <div class="quick-actions mt-4">
+        <div class="qa-label">Quick Actions</div>
+        <a href="/products/add" class="qa-btn"><i class="bi bi-plus-circle"></i> Add Product</a>
+        <a href="/products?low_stock=true" class="qa-btn qa-warn"><i class="bi bi-exclamation-triangle"></i> Low Stock</a>
+        <a href="/api/docs" target="_blank" class="qa-btn"><i class="bi bi-code-slash"></i> API Docs</a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

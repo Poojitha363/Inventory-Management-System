@@ -1,0 +1,159 @@
+{% extends "base.html" %}
+{% block title %}Add Product{% endblock %}
+{% block breadcrumb %}<a href="/products" class="breadcrumb-link">Products</a><i class="bi bi-chevron-right mx-2 text-muted" style="font-size:.7rem"></i>Add Product{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div>
+    <h1 class="page-title">Add New Product</h1>
+    <p class="page-subtitle">Fill in the details below to add to your inventory</p>
+  </div>
+  <a href="/products" class="btn-outline-custom"><i class="bi bi-arrow-left"></i> Back</a>
+</div>
+
+{% if error %}
+<div class="alert-inline alert-inline-danger">
+  <i class="bi bi-exclamation-circle-fill"></i> {{ error }}
+</div>
+{% endif %}
+
+<div class="form-layout">
+  <form method="POST" action="/products/add" id="productForm">
+
+    <!-- Left column -->
+    <div class="form-col-main">
+
+      <div class="form-card animate-in" style="--delay:.05s">
+        <div class="form-card-header">
+          <i class="bi bi-info-circle text-primary"></i>
+          <span>Basic Information</span>
+        </div>
+
+        <div class="form-row-2">
+          <div class="fgroup">
+            <label class="flabel">Product Name <span class="req">*</span></label>
+            <input type="text" name="name" class="finput" placeholder="e.g. MacBook Pro 14&quot;"
+                   required minlength="2" maxlength="200" />
+          </div>
+          <div class="fgroup">
+            <label class="flabel">SKU <span class="req">*</span></label>
+            <input type="text" name="sku" class="finput" placeholder="e.g. ELEC-MBP14"
+                   required oninput="this.value=this.value.toUpperCase()" />
+            <small class="fhint">Auto-uppercased. Must be unique.</small>
+          </div>
+        </div>
+
+        <div class="fgroup">
+          <label class="flabel">Description</label>
+          <textarea name="description" class="finput ftextarea" rows="3"
+                    placeholder="Optional product description…"></textarea>
+        </div>
+
+        <div class="fgroup">
+          <label class="flabel">Category</label>
+          <select name="category_id" class="finput fselect">
+            <option value="">— No Category —</option>
+            {% for cat in categories %}
+            <option value="{{ cat.id }}">{{ cat.name }}</option>
+            {% endfor %}
+          </select>
+        </div>
+      </div>
+
+      <div class="form-card animate-in" style="--delay:.10s">
+        <div class="form-card-header">
+          <i class="bi bi-currency-dollar text-success"></i>
+          <span>Pricing</span>
+        </div>
+        <div class="form-row-2">
+          <div class="fgroup">
+            <label class="flabel">Selling Price ($) <span class="req">*</span></label>
+            <div class="finput-prefix-wrap">
+              <span class="finput-prefix">$</span>
+              <input type="number" name="price" class="finput finput-prefix" step="0.01"
+                     min="0" placeholder="0.00" required />
+            </div>
+          </div>
+          <div class="fgroup">
+            <label class="flabel">Cost Price ($)</label>
+            <div class="finput-prefix-wrap">
+              <span class="finput-prefix">$</span>
+              <input type="number" name="cost_price" class="finput finput-prefix" step="0.01"
+                     min="0" placeholder="0.00" value="0" />
+            </div>
+            <small class="fhint">Used to calculate margin.</small>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Right column -->
+    <div class="form-col-side">
+
+      <div class="form-card animate-in" style="--delay:.15s">
+        <div class="form-card-header">
+          <i class="bi bi-archive text-warning"></i>
+          <span>Stock</span>
+        </div>
+        <div class="fgroup">
+          <label class="flabel">Initial Quantity <span class="req">*</span></label>
+          <input type="number" name="quantity" class="finput" min="0" placeholder="0" required />
+        </div>
+        <div class="fgroup">
+          <label class="flabel">Low Stock Threshold</label>
+          <input type="number" name="low_stock_threshold" class="finput" min="0" value="10" />
+          <small class="fhint">Alert when quantity ≤ this value.</small>
+        </div>
+      </div>
+
+      <div class="form-card animate-in" style="--delay:.20s">
+        <div class="form-card-header">
+          <i class="bi bi-image text-info"></i>
+          <span>Product Image</span>
+        </div>
+        <div class="fgroup">
+          <label class="flabel">Image URL</label>
+          <input type="url" name="image_url" class="finput" placeholder="https://…"
+                 id="imageUrlInput" oninput="previewImage(this.value)" />
+          <small class="fhint">Link to a product photo.</small>
+        </div>
+        <div class="image-preview-box" id="imagePreview">
+          <i class="bi bi-image text-muted" style="font-size:2rem;opacity:.3"></i>
+          <span>Preview</span>
+        </div>
+      </div>
+
+      <div class="form-actions animate-in" style="--delay:.25s">
+        <button type="submit" class="btn-primary-custom w-100" id="submitBtn">
+          <span id="submitText"><i class="bi bi-plus-circle me-1"></i> Add Product</span>
+          <span id="submitSpinner" class="spinner-border spinner-border-sm d-none"></span>
+        </button>
+        <a href="/products" class="btn-outline-custom w-100 text-center">Cancel</a>
+      </div>
+    </div>
+
+  </form>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+function previewImage(url) {
+  const box = document.getElementById('imagePreview');
+  if (url && url.startsWith('http')) {
+    box.innerHTML = `<img src="${url}" alt="Preview"
+      onerror="this.parentElement.innerHTML='<span class=text-muted>Invalid URL</span>'"
+      style="max-width:100%;max-height:160px;border-radius:8px;object-fit:cover">`;
+  } else {
+    box.innerHTML = '<i class="bi bi-image text-muted" style="font-size:2rem;opacity:.3"></i><span>Preview</span>';
+  }
+}
+
+document.getElementById('productForm').addEventListener('submit', function() {
+  document.getElementById('submitText').classList.add('d-none');
+  document.getElementById('submitSpinner').classList.remove('d-none');
+  document.getElementById('submitBtn').disabled = true;
+});
+</script>
+{% endblock %}

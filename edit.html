@@ -1,0 +1,167 @@
+{% extends "base.html" %}
+{% block title %}Edit — {{ product.name }}{% endblock %}
+{% block breadcrumb %}
+  <a href="/products" class="breadcrumb-link">Products</a>
+  <i class="bi bi-chevron-right mx-2 text-muted" style="font-size:.7rem"></i>
+  Edit
+{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div>
+    <h1 class="page-title">Edit Product</h1>
+    <p class="page-subtitle"><code class="sku-code">{{ product.sku }}</code> &nbsp;·&nbsp; {{ product.name }}</p>
+  </div>
+  <a href="/products/{{ product.id }}" class="btn-outline-custom"><i class="bi bi-arrow-left"></i> Back</a>
+</div>
+
+{% if error %}
+<div class="alert-inline alert-inline-danger">
+  <i class="bi bi-exclamation-circle-fill"></i> {{ error }}
+</div>
+{% endif %}
+
+<div class="form-layout">
+  <form method="POST" action="/products/{{ product.id }}/edit" id="editForm">
+
+    <div class="form-col-main">
+
+      <div class="form-card animate-in" style="--delay:.05s">
+        <div class="form-card-header">
+          <i class="bi bi-info-circle text-primary"></i> Basic Information
+        </div>
+        <div class="form-row-2">
+          <div class="fgroup">
+            <label class="flabel">Product Name <span class="req">*</span></label>
+            <input type="text" name="name" class="finput" value="{{ product.name }}" required />
+          </div>
+          <div class="fgroup">
+            <label class="flabel">SKU</label>
+            <input type="text" class="finput" value="{{ product.sku }}" disabled />
+            <small class="fhint">SKU cannot be changed after creation.</small>
+          </div>
+        </div>
+        <div class="fgroup">
+          <label class="flabel">Description</label>
+          <textarea name="description" class="finput ftextarea" rows="3">{{ product.description or '' }}</textarea>
+        </div>
+        <div class="fgroup">
+          <label class="flabel">Category</label>
+          <select name="category_id" class="finput fselect">
+            <option value="">— No Category —</option>
+            {% for cat in categories %}
+            <option value="{{ cat.id }}" {% if product.category_id == cat.id %}selected{% endif %}>
+              {{ cat.name }}
+            </option>
+            {% endfor %}
+          </select>
+        </div>
+      </div>
+
+      <div class="form-card animate-in" style="--delay:.10s">
+        <div class="form-card-header">
+          <i class="bi bi-currency-dollar text-success"></i> Pricing
+        </div>
+        <div class="form-row-2">
+          <div class="fgroup">
+            <label class="flabel">Selling Price ($)</label>
+            <div class="finput-prefix-wrap">
+              <span class="finput-prefix">$</span>
+              <input type="number" name="price" class="finput finput-prefix"
+                     step="0.01" min="0" value="{{ product.price }}" required />
+            </div>
+          </div>
+          <div class="fgroup">
+            <label class="flabel">Cost Price ($)</label>
+            <div class="finput-prefix-wrap">
+              <span class="finput-prefix">$</span>
+              <input type="number" name="cost_price" class="finput finput-prefix"
+                     step="0.01" min="0" value="{{ product.cost_price or 0 }}" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-col-side">
+
+      <div class="form-card animate-in" style="--delay:.15s">
+        <div class="form-card-header">
+          <i class="bi bi-archive text-warning"></i> Stock
+        </div>
+        <div class="fgroup">
+          <label class="flabel">Quantity</label>
+          <input type="number" name="quantity" class="finput" min="0" value="{{ product.quantity }}" required />
+        </div>
+        <div class="fgroup">
+          <label class="flabel">Low Stock Threshold</label>
+          <input type="number" name="low_stock_threshold" class="finput" min="0" value="{{ product.low_stock_threshold }}" />
+        </div>
+
+        <!-- Quick stock adjustment -->
+        <div class="stock-adj-box mt-3">
+          <div class="stock-adj-title">Quick Stock Adjust</div>
+          <div class="stock-adj-btns">
+            <button type="button" class="adj-btn adj-minus" onclick="adjustQty(-10)">−10</button>
+            <button type="button" class="adj-btn adj-minus" onclick="adjustQty(-1)">−1</button>
+            <button type="button" class="adj-btn adj-plus" onclick="adjustQty(1)">+1</button>
+            <button type="button" class="adj-btn adj-plus" onclick="adjustQty(10)">+10</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-card animate-in" style="--delay:.20s">
+        <div class="form-card-header">
+          <i class="bi bi-image text-info"></i> Product Image
+        </div>
+        <div class="fgroup">
+          <label class="flabel">Image URL</label>
+          <input type="url" name="image_url" class="finput" id="imageUrlInput"
+                 value="{{ product.image_url or '' }}" oninput="previewImage(this.value)"
+                 placeholder="https://…" />
+        </div>
+        <div class="image-preview-box" id="imagePreview">
+          {% if product.image_url %}
+            <img src="{{ product.image_url }}" alt="{{ product.name }}"
+                 style="max-width:100%;max-height:160px;border-radius:8px;object-fit:cover" />
+          {% else %}
+            <i class="bi bi-image text-muted" style="font-size:2rem;opacity:.3"></i>
+            <span>Preview</span>
+          {% endif %}
+        </div>
+      </div>
+
+      <div class="form-actions animate-in" style="--delay:.25s">
+        <button type="submit" class="btn-primary-custom w-100" id="submitBtn">
+          <i class="bi bi-check2-circle me-1"></i> Save Changes
+        </button>
+        <a href="/products/{{ product.id }}" class="btn-outline-custom w-100 text-center">Cancel</a>
+      </div>
+    </div>
+
+  </form>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+function adjustQty(delta) {
+  const input = document.querySelector('input[name="quantity"]');
+  const newVal = Math.max(0, parseInt(input.value || 0) + delta);
+  input.value = newVal;
+  input.classList.add('input-flash');
+  setTimeout(() => input.classList.remove('input-flash'), 400);
+}
+
+function previewImage(url) {
+  const box = document.getElementById('imagePreview');
+  if (url && url.startsWith('http')) {
+    box.innerHTML = `<img src="${url}" alt="Preview"
+      onerror="this.parentElement.innerHTML='<span class=text-muted>Invalid URL</span>'"
+      style="max-width:100%;max-height:160px;border-radius:8px;object-fit:cover">`;
+  } else {
+    box.innerHTML = '<i class="bi bi-image text-muted" style="font-size:2rem;opacity:.3"></i><span>Preview</span>';
+  }
+}
+</script>
+{% endblock %}
